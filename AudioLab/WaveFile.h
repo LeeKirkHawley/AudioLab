@@ -33,7 +33,6 @@ class WaveFile
 	};
 
 	wav_header_t _header;
-	//FILE *fin = nullptr;
 	std::ifstream infile;
 
 
@@ -59,14 +58,12 @@ public:
 
 	bool Open(std::wstring FilePath)
 	{
-		//int err = _wfopen_s(&fin, FilePath.c_str(), L"rb");
 		infile.open(FilePath.c_str(), ios::binary | ios::in);
 
 		if (!infile.is_open())
 			return false;
 
 		//Read WAV header
-		//fread(&_header, sizeof(_header), 1, fin);
 		infile.read((char*)&_header, sizeof(_header));
 
 		//Print WAV header
@@ -92,14 +89,12 @@ public:
 		//go to data chunk
 		while (true)
 		{
-			//fread(&chunk, sizeof(chunk), 1, fin);
 			int s = sizeof(chunk);
 			infile.read((char*)&chunk, sizeof(chunk));
 			//printf("%c%c%c%c\t" "%li\n", chunk.ID[0], chunk.ID[1], chunk.ID[2], chunk.ID[3], chunk.size);
 			if (*(unsigned int *)&chunk.ID == 0x61746164)
 				break;
 			//skip chunk data bytes
-			//fseek(fin, chunk.size, SEEK_CUR);
 			infile.seekg(chunk.size, ios_base::cur);
 		}
 
@@ -126,7 +121,6 @@ public:
 
 		int BytesToRead = Samples * SampleSizeBytes * Channels;
 
-		//int BytesRead = fread(Bytes, 1, BytesToRead, fin);
 		try
 		{
 			if (!infile.read((char *)Bytes, BytesToRead))
